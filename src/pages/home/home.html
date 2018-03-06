@@ -1,0 +1,127 @@
+<ion-header>
+ <custom-logged-header [title] = "view | capitalize : true"> </custom-logged-header>
+<ion-toolbar>
+  <ion-segment [(ngModel)] = "view">
+      <ion-segment-button value = "spotteds">
+          <ion-icon  name="home" color="primary"></ion-icon>
+              </ion-segment-button>
+    <ion-segment-button value = "chats">
+        <ion-icon  name="chatboxes" color="primary"></ion-icon>
+      </ion-segment-button>
+    <ion-segment-button value = "users">
+        <ion-icon  name="people" color="primary"></ion-icon>
+      </ion-segment-button>
+  </ion-segment>
+</ion-toolbar>
+<ion-toolbar>
+  <ion-searchbar (ionInput)="filterItems($event)">
+  </ion-searchbar>
+</ion-toolbar>
+
+  </ion-header>
+  
+  <ion-content padding>
+    <div [ngSwitch] = "view">
+    <ion-list no-lines *ngSwitchCase = "'chats'">
+<button ion-item *ngFor = "let chat of chats | async" (click)="onChatOpen(chat)">
+<ion-avatar item-left>
+<img [src]="chat.photo || 'assets/images/no-photo.jpg'">
+</ion-avatar>
+  <h2>
+    {{chat.title}}
+  </h2>
+  <p *ngIf="chat.lastMessage ; else customMessage">
+    {{chat.timestamp | date : 'dd/MM/y H:mm'}} - {{chat.lastMessage}} 
+  </p>
+  <ng-template #customMessage>
+<p>
+  Não há mensagens
+</p>
+  </ng-template>
+</button>
+<button ion-item  (click)="openChatBot()">
+    <ion-avatar item-left>
+    <img [src]="'assets/images/no-photo.jpg'">
+    </ion-avatar>
+      <h2>
+        ChatBot
+      </h2>
+    <p>
+      Não há mensagens
+    </p>
+    </button>
+    </ion-list>
+  <ion-list no-lines *ngSwitchCase = "'users'">
+  <button ion-item *ngFor = "let user of users | async" (click) = "onChatCreate(user)">
+      <ion-avatar item-left>
+          <img [src]="user.photo || 'assets/images/no-photo.jpg'">
+          </ion-avatar>
+  {{user.name}}
+  </button>
+  </ion-list>
+  <ion-list *ngSwitchCase="'spotteds'">
+    <!--     COMENTARIO       -->
+    <!--     COMENTARIO            <img  round [src]="spotted.userId.photo || 'assets/images/no-photo.jpg'">
+                  --> 
+      <ion-row >
+          <ion-col *ngFor="let spotted of spotteds | async ">
+              <ion-card >              
+                  <ion-item >
+                    <ion-avatar item-start>
+                    <!--     COMENTARIO            <img  round [src]="spotted.userId.photo || 'assets/images/no-photo.jpg'">
+                    -->
+                    <img  round  [src]="spotted.userPhoto || 'assets/images/no-photo.jpg'">
+                  </ion-avatar>
+                    <h2>{{spotted.userNome}}</h2>
+                    <p>   {{spotted.timestamp | date : 'dd/MM/y H:mm'  }} </p>
+                  </ion-item>
+                  <ion-item *ngIf ="spotted.userPhoto">
+                      <strong>{{spotted.titulo}}</strong>
+                    </ion-item>
+  
+                <!--     COMENTARIO     || amTimeAgo        <img padding [src]="spotted.photo  ||  'assets/images/download.jpg'">
+                 -->        <img  *ngIf ="spotted.userPhoto === '' " [src]=" 'assets/images/download.jpg'">
+                 <div class = "card_title"   *ngIf ="spotted.userPhoto === '' ">{{spotted.titulo}}</div>
+               <br>
+               <div class="card_subtitle"  *ngIf ="spotted.userPhoto === '' ">
+                 {{spotted.conteudo}}
+                </div>
+                  <ion-card-content *ngIf ="spotted.userPhoto" >
+                    <p>{{spotted.conteudo}}</p>
+                  </ion-card-content>
+                
+                  <ion-row>
+                    <ion-col>
+                      <button ion-button icon-left clear small>
+                        <ion-icon name="thumbs-up"></ion-icon>
+                        <div>12 likes</div>
+                      </button>
+                    </ion-col>
+                    <ion-col>
+                      <button ion-button icon-left clear small>
+                        <ion-icon name="text"></ion-icon>
+                        <div>44 comentarios</div>
+                      </button>
+                    </ion-col>
+                    <ion-col center text-center>
+                      <ion-note><strong>
+                      {{spotted.timestamp | date : 'dd/MM/y H:mm'  }}   </strong>
+                      </ion-note>
+                    </ion-col>
+                  </ion-row>
+                </ion-card>
+          </ion-col>
+  
+        </ion-row>
+
+
+
+    </ion-list>
+  
+</div>
+<ion-fab left bottom>
+    <button ion-fab color="primary"
+      (click)="openSpotted()"><ion-icon name="add"></ion-icon></button>
+  </ion-fab> 
+
+</ion-content>
